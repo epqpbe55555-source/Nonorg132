@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Smart — Aluminum (Group 13)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B121C;
+    --surface:#131D2C;
+    --surface-2:#1B2739;
+    --surface-3:#22304480;
+    --border:#2A3A52;
+    --text:#E8EEF6;
+    --text-muted:#8FA2BC;
+    --accent:#5FE2C4;
+    --accent-dim:#5FE2C41f;
+    --amber:#F0A94C;
+    --amber-dim:#F0A94C1f;
+    --rose:#EA6B8A;
+    --rose-dim:#EA6B8A1f;
+    --radius-sm:6px;
+    --radius-md:10px;
+    --radius-lg:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 600px at 85% -10%, #14314a55, transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, #1a2f2655, transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    min-height:100vh;
+    line-height:1.5;
+  }
+  ::selection{background:var(--accent-dim); color:var(--accent);}
+  h1,h2,h3,h4{font-family:'Fraunces', serif; font-weight:600; margin:0;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .wrap{max-width:1180px; margin:0 auto; padding:28px 24px 60px;}
+
+  /* ---------- Header ---------- */
+  header.top{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+    flex-wrap:wrap;
+    padding-bottom:22px; margin-bottom:26px;
+    border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex; align-items:center; gap:16px;}
+  .brand-cell{
+    width:74px; height:74px; border:1.5px solid var(--accent);
+    border-radius:var(--radius-md);
+    background:linear-gradient(155deg, #10251f, #0d1a22);
+    position:relative; flex-shrink:0;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+  }
+  .brand-cell .grp{position:absolute; top:6px; left:8px; font-size:9px; letter-spacing:.06em; color:var(--text-muted); font-family:'IBM Plex Mono',monospace;}
+  .brand-cell .sym{font-family:'Fraunces',serif; font-size:28px; font-weight:700; color:var(--accent); line-height:1;}
+  .brand-title h1{font-size:30px; color:var(--text); letter-spacing:.01em;}
+  .brand-title p{margin:4px 0 0; color:var(--text-muted); font-size:14px;}
+  .brand-title p .mono{color:var(--amber);}
+
+  nav.tabs{display:flex; gap:8px; flex-wrap:wrap;}
+  .tab-btn{
+    display:flex; flex-direction:column; align-items:flex-start; gap:2px;
+    padding:8px 14px 8px 12px; border-radius:var(--radius-sm);
+    border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); cursor:pointer; font-family:'IBM Plex Sans',sans-serif;
+    transition:border-color .15s ease, color .15s ease, background .15s ease;
+    min-width:96px;
+  }
+  .tab-btn .tsym{font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.05em; color:var(--accent);}
+  .tab-btn .tname{font-size:13px; font-weight:500;}
+  .tab-btn:hover{border-color:var(--accent); color:var(--text);}
+  .tab-btn.active{background:var(--surface-2); border-color:var(--accent); color:var(--text); box-shadow:0 0 0 1px var(--accent) inset;}
+
+  section.panel{display:none;}
+  section.panel.active{display:block; animation:fadeUp .35s ease;}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .section-head{margin-bottom:18px;}
+  .section-head h2{font-size:24px;}
+  .section-head p{color:var(--text-muted); font-size:14.5px; margin-top:6px; max-width:640px;}
+
+  /* ---------- Overview ---------- */
+  .ov-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(270px,1fr)); gap:16px;}
+  .ov-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:18px 18px 16px;
+  }
+  .ov-card h3{font-size:16px; color:var(--accent); margin-bottom:10px; display:flex; align-items:center; gap:8px;}
+  .ov-card h3 .dot{width:7px; height:7px; border-radius:50%; background:var(--accent); flex-shrink:0;}
+  .ov-card ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:7px;}
+  .ov-card li{font-size:13.6px; color:#CBD6E6;}
+  .ov-card li b{color:var(--text); font-weight:600;}
+  .rx{
+    margin-top:6px; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:var(--radius-sm); padding:8px 10px; font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px; color:var(--amber); overflow-x:auto; white-space:nowrap;
+  }
+
+  /* ---------- Diagrams ---------- */
+  .subtabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+  .subtab{
+    padding:7px 13px; border-radius:999px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text-muted); font-size:12.5px; cursor:pointer;
+  }
+  .subtab.active{border-color:var(--amber); color:var(--amber); background:var(--amber-dim);}
+  .diagram{
+    display:none; background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius-lg); padding:22px;
+  }
+  .diagram.active{display:block; animation:fadeUp .3s ease;}
+  .diagram h3{font-size:17px; margin-bottom:4px;}
+  .diagram .sub{color:var(--text-muted); font-size:13px; margin-bottom:18px;}
+
+  /* body distribution */
+  .body-map{display:grid; grid-template-columns:220px 1fr; gap:26px; align-items:center;}
+  .body-svg-wrap{position:relative; display:flex; justify-content:center;}
+  .hotspot{
+    position:absolute; width:22px; height:22px; border-radius:50%;
+    background:var(--surface-2); border:2px solid var(--accent); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; color:var(--accent);
+    font-size:11px; font-family:'IBM Plex Mono',monospace; transition:transform .15s ease;
+  }
+  .hotspot:hover, .hotspot.sel{transform:scale(1.18); background:var(--accent); color:#062018;}
+  .body-info{background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:16px 18px; min-height:150px;}
+  .body-info h4{color:var(--accent); font-size:15px; margin-bottom:8px;}
+  .body-info p{font-size:13.6px; color:#CBD6E6; margin:0;}
+
+  /* reaction toggle */
+  .rx-toggle{display:flex; gap:8px; margin-bottom:16px;}
+  .rx-btn{padding:8px 14px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); cursor:pointer; font-size:13px;}
+  .rx-btn.active{border-color:var(--rose); color:var(--rose); background:var(--rose-dim);}
+  .rx-display{background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:20px; text-align:center;}
+  .rx-eq{font-family:'IBM Plex Mono',monospace; font-size:19px; color:var(--text); letter-spacing:.02em;}
+  .rx-note{margin-top:12px; font-size:13.5px; color:var(--text-muted);}
+  .rx-note b{color:var(--amber);}
+
+  /* raft steps + phosphate steps */
+  .steps{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;}
+  .step-btn{
+    flex:1; min-width:150px; text-align:left; padding:12px 14px; border-radius:var(--radius-md);
+    border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); cursor:pointer;
+  }
+  .step-btn .snum{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent);}
+  .step-btn .stitle{display:block; font-size:13.5px; color:var(--text); margin-top:3px; font-weight:500;}
+  .step-btn.active{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset;}
+  .step-detail{background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:16px 18px; font-size:13.8px; color:#CBD6E6; min-height:70px;}
+
+  /* table chart */
+  .bars{display:flex; align-items:flex-end; gap:26px; height:180px; padding:0 10px; margin-bottom:14px;}
+  .bar-col{display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; height:100%; justify-content:flex-end; cursor:pointer;}
+  .bar{width:46px; border-radius:6px 6px 3px 3px; background:linear-gradient(180deg, var(--accent), #2c7f6c); transition:filter .15s ease;}
+  .bar-col:hover .bar, .bar-col.sel .bar{filter:brightness(1.25);}
+  .bar-col .blabel{font-size:11.5px; color:var(--text-muted); text-align:center;}
+  .bar-col .bval{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--amber);}
+  .bar-info{background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px 16px; font-size:13.5px; color:#CBD6E6;}
+
+  /* ---------- Mind map ---------- */
+  .mm-wrap{display:grid; grid-template-columns:1fr 340px; gap:24px; align-items:start;}
+  .mm-field{position:relative; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); height:460px; overflow:hidden;}
+  .mm-center{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:132px; height:132px; border-radius:50%; border:1.5px solid var(--accent);
+    background:radial-gradient(circle at 35% 30%, #123527, #0c1c19);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  }
+  .mm-center .sym{font-family:'Fraunces',serif; font-weight:700; font-size:26px; color:var(--accent);}
+  .mm-center .lbl{font-size:10.5px; color:var(--text-muted); margin-top:2px;}
+  .mm-node{
+    position:absolute; width:150px; padding:9px 12px; border-radius:var(--radius-sm);
+    border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted);
+    cursor:pointer; font-size:12.3px; text-align:center; transform:translate(-50%,-50%);
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .mm-node:hover, .mm-node.sel{border-color:var(--amber); color:var(--amber); background:var(--amber-dim);}
+  .mm-panel{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px; min-height:460px;}
+  .mm-panel h4{color:var(--amber); font-size:16px; margin-bottom:10px;}
+  .mm-panel p{font-size:13.8px; color:#CBD6E6; margin:0 0 10px;}
+  .mm-panel .hint{color:var(--text-muted); font-size:13px;}
+
+  /* ---------- Flash cards ---------- */
+  .fc-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .fc-filter{padding:6px 12px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--text-muted); font-size:12px; cursor:pointer;}
+  .fc-filter.active{border-color:var(--accent); color:var(--accent); background:var(--accent-dim);}
+  .fc-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:14px;}
+  .fc-card{height:150px; perspective:1000px; cursor:pointer;}
+  .fc-inner{position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d;}
+  .fc-card.flipped .fc-inner{transform:rotateY(180deg);}
+  .fc-face{
+    position:absolute; inset:0; border-radius:var(--radius-md); border:1px solid var(--border);
+    padding:14px; backface-visibility:hidden; display:flex; flex-direction:column; justify-content:center;
+  }
+  .fc-front{background:var(--surface);}
+  .fc-front .cat{font-size:9.5px; letter-spacing:.05em; color:var(--accent); font-family:'IBM Plex Mono',monospace; margin-bottom:8px;}
+  .fc-front .q{font-size:13.6px; color:var(--text); font-weight:500;}
+  .fc-back{background:var(--surface-2); transform:rotateY(180deg); border-color:var(--amber);}
+  .fc-back .a{font-size:13px; color:#CFDAE9;}
+  .fc-hint{position:absolute; bottom:8px; right:10px; font-size:10px; color:var(--text-muted);}
+
+  /* ---------- Quiz ---------- */
+  .quiz-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;}
+  .score-chip{background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:7px 16px; font-size:13px; color:var(--text-muted);}
+  .score-chip b{color:var(--accent);}
+  .qz-body{display:grid; grid-template-columns:1fr 240px; gap:22px; align-items:start;}
+  .qz-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:22px;}
+  .qz-card .qnum{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent); margin-bottom:8px;}
+  .qz-card .qtext{font-size:16.5px; color:var(--text); margin-bottom:18px; font-family:'Fraunces',serif; font-weight:500;}
+  .opt{
+    display:block; width:100%; text-align:left; padding:11px 14px; margin-bottom:9px;
+    border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--surface-2);
+    color:#D8E1EE; cursor:pointer; font-size:13.8px; font-family:'IBM Plex Sans',sans-serif;
+  }
+  .opt:hover{border-color:var(--accent);}
+  .opt.correct{border-color:var(--accent); background:var(--accent-dim); color:var(--accent);}
+  .opt.wrong{border-color:var(--rose); background:var(--rose-dim); color:var(--rose);}
+  .opt[disabled]{cursor:default;}
+  .qz-explain{margin-top:6px; padding:12px 14px; border-radius:var(--radius-sm); background:var(--surface-2); border:1px solid var(--border); font-size:13px; color:var(--text-muted); display:none;}
+  .qz-explain.show{display:block;}
+  .qz-nav{display:flex; gap:10px; margin-top:16px;}
+  .qz-navbtn{padding:9px 16px; border-radius:var(--radius-sm); border:1px solid var(--accent); background:var(--accent-dim); color:var(--accent); cursor:pointer; font-size:13px;}
+  .qz-navbtn:disabled{opacity:.35; cursor:default;}
+  .qz-bank{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px;}
+  .qz-bank h4{font-size:13px; color:var(--text-muted); margin-bottom:10px; font-family:'IBM Plex Sans',sans-serif; font-weight:500;}
+  .qz-grid{display:grid; grid-template-columns:repeat(6, 1fr); gap:6px;}
+  .qz-dot{
+    aspect-ratio:1; border-radius:5px; border:1px solid var(--border); background:var(--surface-2);
+    color:var(--text-muted); font-family:'IBM Plex Mono',monospace; font-size:11px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .qz-dot.current{border-color:var(--text);}
+  .qz-dot.correct{border-color:var(--accent); background:var(--accent-dim); color:var(--accent);}
+  .qz-dot.wrong{border-color:var(--rose); background:var(--rose-dim); color:var(--rose);}
+  .qz-restart{margin-top:14px; width:100%; padding:9px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); cursor:pointer; font-size:12.5px;}
+
+  footer.site{margin-top:44px; padding-top:18px; border-top:1px solid var(--border); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; color:var(--text-muted); font-size:12px;}
+  footer.site .mono{color:var(--text-muted);}
+
+  @media (max-width:820px){
+    .body-map, .mm-wrap, .qz-body{grid-template-columns:1fr;}
+    .mm-field{height:520px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="brand-cell"><span class="grp">GROUP 13</span><span class="sym">Sm</span></div>
+      <div class="brand-title">
+        <h1>Study Smart</h1>
+        <p>Aluminum (Al) — Inorganic Pharmaceutical Chemistry <span class="mono">· 3rd Stage</span></p>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="overview"><span class="tsym">Ov</span><span class="tname">Overview</span></button>
+      <button class="tab-btn" data-tab="diagrams"><span class="tsym">Dg</span><span class="tname">Diagrams</span></button>
+      <button class="tab-btn" data-tab="mindmap"><span class="tsym">Mm</span><span class="tname">Mind Map</span></button>
+      <button class="tab-btn" data-tab="flashcards"><span class="tsym">Fc</span><span class="tname">Flash Cards</span></button>
+      <button class="tab-btn" data-tab="quiz"><span class="tsym">Qz</span><span class="tname">Quiz Bank</span></button>
+    </nav>
+  </header>
+
+  <!-- ============ OVERVIEW ============ -->
+  <section class="panel active" id="panel-overview">
+    <div class="section-head">
+      <h2>Overview</h2>
+      <p>The key facts and rules — not the full lecture. Everything below is worth remembering on its own.</p>
+    </div>
+    <div class="ov-grid">
+      <div class="ov-card">
+        <h3><span class="dot"></span>Element basics</h3>
+        <ul>
+          <li>Atomic number <b>13</b>, symbol <b>Al</b>, classified as a <b>post-transition metal</b>.</li>
+          <li>Soft, durable, lightweight — used in construction, aircraft, packaging.</li>
+        </ul>
+      </div>
+      <div class="ov-card">
+        <h3><span class="dot"></span>Biological role & distribution</h3>
+        <ul>
+          <li>Body contains <b>~35 mg of Al³⁺</b>: ~50% lungs, ~50% skeleton.</li>
+          <li><b>No known biological role</b> — the body actively excludes it.</li>
+          <li>Minimal gut absorption; <b>kidneys</b> excrete most of it quickly.</li>
+          <li>Bone acts as a slow-release <b>sink</b>; the <b>blood–brain barrier</b> normally blocks brain entry.</li>
+          <li>Competes with <b>Mg²⁺, Ca²⁺, Fe²⁺/³⁺</b> (similar ionic radius/charge).</li>
+          <li>At pH 7.4, forms barely soluble <b>Al(OH)₃</b>.</li>
+        </ul>
+      </div>
+      <div class="ov-card">
+        <h3><span class="dot"></span>Toxicity & accumulation</h3>
+        <ul>
+          <li>Accumulates with <b>IV use, dialysis, impaired kidney function</b>.</li>
+          <li><b>Dialysis dementia</b> (Alfrey, 1972): encephalopathy after ≥15 months hemodialysis.</li>
+          <li>Symptoms: speech disorders, bone mineralization problems, dementia signs.</li>
+          <li>Prevented today with <b>Al³⁺-free dialysate</b> / reverse osmosis.</li>
+        </ul>
+      </div>
+      <div class="ov-card">
+        <h3><span class="dot"></span>Pharmaceutical uses (4 categories)</h3>
+        <ul>
+          <li><b>Adjuvant</b> — Al³⁺ salts, FDA-approved, slow-release antigen depot (anthrax, diphtheria, Hib, hepatitis A/B, Lyme, pertussis, tetanus).</li>
+          <li><b>Antacid</b> — Al(OH)₃ is amphoteric, neutralizes HCl, no CO₂ side effect.</li>
+          <li><b>Phosphate binder</b> — Al(OH)₃ / aluminosilicates bind phosphate as AlPO₄, excreted in feces.</li>
+          <li><b>Antiperspirant</b> — AlCl₃ / aluminum hexahydrate plug the sweat duct.</li>
+        </ul>
+      </div>
+      <div class="ov-card">
+        <h3><span class="dot"></span>Key reactions</h3>
+        <div class="rx">Al(OH)₃ + 3HCl → AlCl₃ + 3H₂O</div>
+        <div class="rx">NaHCO₃ + HCl → NaCl + H₂O + CO₂</div>
+        <ul style="margin-top:10px;">
+          <li>Al(OH)₃ route avoids CO₂ (no bloating); NaHCO₃ route can cause alkaline urine in large doses.</li>
+          <li>Constipation from Al(OH)₃ is often offset with Mg²⁺ antacids + simethicone.</li>
+        </ul>
+      </div>
+      <div class="ov-card">
+        <h3><span class="dot"></span>Alginate raft (GERD relief)</h3>
+        <ul>
+          <li>Alginates: natural polysaccharides from brown seaweed.</li>
+          <li>Raft = alginic acid + NaHCO₃ + magnesium trisilicate + Al(OH)₃.</li>
+          <li>Trapped CO₂ makes the gel float like a raft, physically blocking reflux.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DIAGRAMS ============ -->
+  <section class="panel" id="panel-diagrams">
+    <div class="section-head">
+      <h2>Diagrams</h2>
+      <p>Every chart, table and process from the material — click through each one.</p>
+    </div>
+    <div class="subtabs">
+      <button class="subtab active" data-d="d1">Al³⁺ distribution</button>
+      <button class="subtab" data-d="d2">Neutralization reactions</button>
+      <button class="subtab" data-d="d3">Alginate raft</button>
+      <button class="subtab" data-d="d4">Phosphate binder pathway</button>
+      <button class="subtab" data-d="d5">Antacid/antigas formulation</button>
+    </div>
+
+    <!-- D1 body -->
+    <div class="diagram active" id="d1">
+      <h3>Al³⁺ distribution & barriers in the body</h3>
+      <p class="sub">Click a site to read what happens there.</p>
+      <div class="body-map">
+        <div class="body-svg-wrap" style="height:280px; width:200px;">
+          <svg width="120" height="270" viewBox="0 0 120 270" style="opacity:.35;">
+            <ellipse cx="60" cy="30" rx="22" ry="24" fill="#3a5470"/>
+            <rect x="38" y="55" width="44" height="90" rx="16" fill="#3a5470"/>
+            <rect x="44" y="145" width="32" height="100" rx="14" fill="#3a5470"/>
+          </svg>
+          <div class="hotspot" data-site="brain" style="top:8px; left:88px;">1</div>
+          <div class="hotspot" data-site="lungs" style="top:78px; left:60px;">2</div>
+          <div class="hotspot" data-site="skeleton" style="top:150px; left:130px;">3</div>
+          <div class="hotspot" data-site="kidney" style="top:180px; left:40px;">4</div>
+        </div>
+        <div class="body-info" id="body-info">
+          <h4>Pick a site</h4>
+          <p>Click 1 (brain), 2 (lungs), 3 (skeleton) or 4 (kidney) to see its role in Al³⁺ handling.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- D2 reactions -->
+    <div class="diagram" id="d2">
+      <h3>Antacid neutralization reactions</h3>
+      <p class="sub">Toggle between the two antacid chemistries and compare the by-product.</p>
+      <div class="rx-toggle">
+        <button class="rx-btn active" data-rx="al">Al(OH)₃ route</button>
+        <button class="rx-btn" data-rx="na">NaHCO₃ route</button>
+      </div>
+      <div class="rx-display" id="rx-display">
+        <div class="rx-eq">Al(OH)₃ + 3HCl → AlCl₃ + 3H₂O</div>
+        <div class="rx-note">Al(OH)₃ is <b>amphoteric</b>. This route produces <b>no gas</b>, so it avoids bloating — but Al(OH)₃ is known to cause <b>constipation</b>, often managed with Mg²⁺ antacids + simethicone.</div>
+      </div>
+    </div>
+
+    <!-- D3 raft -->
+    <div class="diagram" id="d3">
+      <h3>Alginate raft formulation — mechanism</h3>
+      <p class="sub">Three steps that turn a swallowed liquid into a floating protective raft.</p>
+      <div class="steps">
+        <button class="step-btn active" data-s="s1"><span class="snum">Step 1</span><span class="stitle">Gel formation</span></button>
+        <button class="step-btn" data-s="s2"><span class="snum">Step 2</span><span class="stitle">CO₂ buoyancy</span></button>
+        <button class="step-btn" data-s="s3"><span class="snum">Step 3</span><span class="stitle">Barrier action</span></button>
+      </div>
+      <div class="step-detail" id="raft-detail">Alginate salts and alginic acid contact gastric HCl and precipitate into a low-density, viscous gel matrix inside the acidic stomach.</div>
+    </div>
+
+    <!-- D4 phosphate -->
+    <div class="diagram" id="d4">
+      <h3>Al(OH)₃ as a phosphate binder — pathway</h3>
+      <p class="sub">Follow Al(OH)₃ from the stomach to excretion.</p>
+      <div class="steps">
+        <button class="step-btn active" data-p="p1"><span class="snum">pH ~1</span><span class="stitle">Stomach dissociation</span></button>
+        <button class="step-btn" data-p="p2"><span class="snum">pH 6–8.5</span><span class="stitle">Intestinal precipitation</span></button>
+        <button class="step-btn" data-p="p3"><span class="snum">Final</span><span class="stitle">Phosphate adsorption</span></button>
+      </div>
+      <div class="step-detail" id="phos-detail">In the acidic stomach (pH ~1), aluminum hydroxide Al(OH)₃ dissociates into free Al³⁺ ions.</div>
+    </div>
+
+    <!-- D5 table -->
+    <div class="diagram" id="d5">
+      <h3>Typical antacid/antigas formulation</h3>
+      <p class="sub">Click a bar for its purpose in the mixture (max-strength combination product).</p>
+      <div class="bars">
+        <div class="bar-col" data-b="al"><div class="bar" style="height:88%;"></div><div class="bval">400 mg</div><div class="blabel">Al(OH)₃</div></div>
+        <div class="bar-col" data-b="mg"><div class="bar" style="height:88%;"></div><div class="bval">400 mg</div><div class="blabel">Mg(OH)₂</div></div>
+        <div class="bar-col" data-b="si"><div class="bar" style="height:12%;"></div><div class="bval">40 mg</div><div class="blabel">Simethicone</div></div>
+      </div>
+      <div class="bar-info" id="bar-info">Click a bar to see its purpose in the formulation.</div>
+    </div>
+  </section>
+
+  <!-- ============ MIND MAP ============ -->
+  <section class="panel" id="panel-mindmap">
+    <div class="section-head">
+      <h2>Mind Map</h2>
+      <p>Click a title around the center — the full explanation opens in the panel on the right.</p>
+    </div>
+    <div class="mm-wrap">
+      <div class="mm-field" id="mm-field">
+        <div class="mm-center"><span class="sym">Al</span><span class="lbl">Aluminum</span></div>
+        <button class="mm-node" data-m="basics" style="top:10%; left:20%;">Element Basics</button>
+        <button class="mm-node" data-m="bio" style="top:8%; left:78%;">Biological Importance</button>
+        <button class="mm-node" data-m="dist" style="top:50%; left:6%;">Distribution in the Body</button>
+        <button class="mm-node" data-m="tox" style="top:50%; left:94%;">Accumulation & Dialysis Dementia</button>
+        <button class="mm-node" data-m="pharm" style="top:90%; left:22%;">Pharmaceutical Preparations</button>
+        <button class="mm-node" data-m="anti" style="top:90%; left:76%;">Antiperspirant Action</button>
+      </div>
+      <div class="mm-panel" id="mm-panel">
+        <h4>Select a branch</h4>
+        <p class="hint">Choose any title around the Al node to read its summary here.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FLASH CARDS ============ -->
+  <section class="panel" id="panel-flashcards">
+    <div class="section-head">
+      <h2>Flash Cards</h2>
+      <p>Click a card to flip it. <span id="fc-count"></span></p>
+    </div>
+    <div class="fc-filters" id="fc-filters"></div>
+    <div class="fc-grid" id="fc-grid"></div>
+  </section>
+
+  <!-- ============ QUIZ BANK ============ -->
+  <section class="panel" id="panel-quiz">
+    <div class="section-head">
+      <h2>Quiz Bank</h2>
+      <p>Answer choices are shuffled each time you load the page.</p>
+    </div>
+    <div class="quiz-top">
+      <div class="score-chip">Score: <b id="qz-score">0</b> / <span id="qz-answered">0</span> answered · <span id="qz-total"></span> total</div>
+    </div>
+    <div class="qz-body">
+      <div class="qz-card">
+        <div class="qnum" id="qz-num"></div>
+        <div class="qtext" id="qz-text"></div>
+        <div id="qz-options"></div>
+        <div class="qz-explain" id="qz-explain"></div>
+        <div class="qz-nav">
+          <button class="qz-navbtn" id="qz-prev">← Previous</button>
+          <button class="qz-navbtn" id="qz-next">Next →</button>
+        </div>
+      </div>
+      <div class="qz-bank">
+        <h4>Jump to question</h4>
+        <div class="qz-grid" id="qz-grid"></div>
+        <button class="qz-restart" id="qz-restart">Restart quiz</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site">
+    <span>Study Smart — Aluminum, Group 13</span>
+    <span class="mono">© Anmar Taha. All rights reserved.</span>
+  </footer>
+</div>
+
+<script>
+/* ===================== TAB NAVIGATION ===================== */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ===================== DIAGRAMS: subtabs ===================== */
+document.querySelectorAll('.subtab').forEach(st=>{
+  st.addEventListener('click', ()=>{
+    document.querySelectorAll('.subtab').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.diagram').forEach(d=>d.classList.remove('active'));
+    st.classList.add('active');
+    document.getElementById(st.dataset.d).classList.add('active');
+  });
+});
+
+/* D1: body hotspots */
+const bodyInfo = {
+  brain:{t:'Brain', d:'The brain is vulnerable to Al³⁺, but the blood–brain barrier (BBB) normally prevents it from entering.'},
+  lungs:{t:'Lungs', d:'Around 50% of the body total (~35 mg) of Al³⁺ is found here.'},
+  skeleton:{t:'Skeleton', d:'The other ~50% is stored here. Bone acts as a sink, releasing Al³⁺ slowly if blood levels are high.'},
+  kidney:{t:'Kidneys', d:'Only a minimal fraction of dietary Al³⁺ is absorbed in the gut, and the kidneys quickly excrete most of it.'}
+};
+document.querySelectorAll('.hotspot').forEach(h=>{
+  h.addEventListener('click', ()=>{
+    document.querySelectorAll('.hotspot').forEach(x=>x.classList.remove('sel'));
+    h.classList.add('sel');
+    const info = bodyInfo[h.dataset.site];
+    document.getElementById('body-info').innerHTML = '<h4>'+info.t+'</h4><p>'+info.d+'</p>';
+  });
+});
+
+/* D2: reaction toggle */
+document.querySelectorAll('.rx-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('.rx-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const disp = document.getElementById('rx-display');
+    if(b.dataset.rx==='al'){
+      disp.innerHTML = '<div class="rx-eq">Al(OH)₃ + 3HCl → AlCl₃ + 3H₂O</div><div class="rx-note">Al(OH)₃ is <b>amphoteric</b>. This route produces <b>no gas</b>, avoiding bloating — but Al(OH)₃ is known to cause <b>constipation</b>, often managed with Mg²⁺ antacids + simethicone.</div>';
+    } else {
+      disp.innerHTML = '<div class="rx-eq">NaHCO₃ + HCl → NaCl + H₂O + CO₂</div><div class="rx-note">This ancient antacid route reacts rapidly with gastric acid but <b>produces CO₂ gas</b>. Large doses can cause <b>alkaline urine</b> and kidney problems.</div>';
+    }
+  });
+});
+
+/* D3: raft steps */
+const raftInfo = {
+  s1:'Alginate salts and alginic acid contact gastric HCl and precipitate into a low-density, viscous gel matrix inside the acidic stomach.',
+  s2:'HCO₃⁻ trapped in the gel reacts to form CO₂ gas. The trapped bubbles turn the gel into foam, giving it buoyancy so it floats on the stomach contents like a raft.',
+  s3:'The floating raft physically blocks gastric reflux and moves into the esophagus during reflux, acting as a mobile neutralizing sealant — Al(OH)₃ adds extra acid-neutralizing capacity. Once pressure drops, the raft sinks back and is digested.'
+};
+document.querySelectorAll('#d3 .step-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#d3 .step-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('raft-detail').textContent = raftInfo[b.dataset.s];
+  });
+});
+
+/* D4: phosphate steps */
+const phosInfo = {
+  p1:'In the acidic stomach (pH ~1), aluminum hydroxide Al(OH)₃ dissociates into free Al³⁺ ions.',
+  p2:'While some Al³⁺ is absorbed, most passes into the intestines (pH 6–8.5), where it precipitates again as amorphous, colloidal Al(OH)₃.',
+  p3:'This colloidal precipitate adsorbs phosphate ions [HPO₄]²⁻, forming an AlPO₄ complex that prevents phosphate absorption and is excreted in feces.'
+};
+document.querySelectorAll('#d4 .step-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#d4 .step-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('phos-detail').textContent = phosInfo[b.dataset.p];
+  });
+});
+
+/* D5: bars */
+const barInfo = {
+  al:'Al(OH)₃ — 400 mg — Antacid. Amphoteric; neutralizes excess stomach acid without producing gas.',
+  mg:'Mg(OH)₂ — 400 mg — Antacid. Paired with Al(OH)₃ partly to counteract the constipating effect of aluminum.',
+  si:'Simethicone — 40 mg — Anti-gas. A poly(dimethyl siloxane)/silica gel mixture that lowers the surface tension of gas bubbles, reducing bloating and discomfort.'
+};
+document.querySelectorAll('.bar-col').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('.bar-col').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');
+    document.getElementById('bar-info').textContent = barInfo[b.dataset.b];
+  });
+});
+
+/* ===================== MIND MAP ===================== */
+const mmInfo = {
+  basics:{t:'Element Basics', d:'Atomic number 13, symbol Al, a post-transition metal. Soft, durable and lightweight — used today mainly in car and aircraft construction, plus packaging and construction materials.'},
+  bio:{t:'Biological Importance', d:'The body holds ~35 mg of Al³⁺ (~50% lungs, ~50% skeleton). There is no known biological role, and the body has developed effective barriers to exclude it. Only a minimal fraction is absorbed from the diet, and the kidneys quickly excrete most of it.'},
+  dist:{t:'Distribution in the Body', d:'Bone can act as a sink, releasing Al³⁺ slowly if blood levels are high. The blood–brain barrier normally protects the brain. Al³⁺ can competitively inhibit Mg²⁺, Ca²⁺ and Fe²⁺/³⁺ due to similar ionic radii/charges, and at pH 7.4 it forms barely soluble Al(OH)₃.'},
+  tox:{t:'Accumulation & Dialysis Dementia', d:'Al³⁺ normally does not accumulate, but can with IV administration, dialysis, or impaired kidney function. Alfrey described dialysis dementia in 1972 — progressive encephalopathy after ≥15 months of hemodialysis, with speech disorders, bone mineralization problems and dementia signs. Modern Al³⁺-free dialysate / reverse osmosis prevents it.'},
+  pharm:{t:'Pharmaceutical Preparations', d:'Four categories: (1) Adjuvant — Al³⁺ salts as an FDA-approved vaccine depot; (2) Antacids — Al(OH)₃, sodium bicarbonate, aluminum glycinate, and alginate raft formulations; (3) Phosphate binders — Al(OH)₃ and aluminosilicates (e.g., Malinal®) for hyperphosphatemia; (4) Antiperspirants.'},
+  anti:{t:'Antiperspirant Action', d:'Aluminum trichloride (AlCl₃) was the first antiperspirant compound. Its mechanism is still under investigation, but it appears to form a plug of Al(OH)₃ within the sweat duct. Leading brands use ~20% aluminum hexahydrate in an alcoholic base, working best in the armpits but also on palms, soles, and (carefully) the face.'}
+};
+document.querySelectorAll('.mm-node').forEach(n=>{
+  n.addEventListener('click', ()=>{
+    document.querySelectorAll('.mm-node').forEach(x=>x.classList.remove('sel'));
+    n.classList.add('sel');
+    const info = mmInfo[n.dataset.m];
+    document.getElementById('mm-panel').innerHTML = '<h4>'+info.t+'</h4><p>'+info.d+'</p>';
+  });
+});
+
+/* ===================== FLASH CARDS ===================== */
+const flashcards = [
+  {c:'Basics', q:'Atomic number of aluminum?', a:'13'},
+  {c:'Basics', q:'Chemical symbol for aluminum?', a:'Al'},
+  {c:'Basics', q:'Classification of aluminum on the periodic table?', a:'Post-transition metal'},
+  {c:'Biology', q:'Total amount of Al³⁺ in the human body?', a:'~35 mg'},
+  {c:'Biology', q:'Distribution of Al³⁺ in the body (two main sites)?', a:'~50% lungs, ~50% skeleton'},
+  {c:'Biology', q:'Is there a known biological role for Al³⁺?', a:'No — the body has developed barriers to exclude it'},
+  {c:'Biology', q:'Where is most ingested Al³⁺ excreted?', a:'Kidneys (rapid excretion); gut absorption is minimal'},
+  {c:'Biology', q:'What can act as a long-term sink for Al³⁺?', a:'Bones — release it slowly if blood levels are high'},
+  {c:'Biology', q:'What normally protects the brain from Al³⁺?', a:'The blood–brain barrier (BBB)'},
+  {c:'Biology', q:'Which essential elements can Al³⁺ competitively inhibit, and why?', a:'Mg²⁺, Ca²⁺, Fe²⁺/³⁺ — similar ionic radii and charge'},
+  {c:'Biology', q:'What does Al³⁺ form at physiological pH 7.4?', a:'A barely soluble precipitate, Al(OH)₃'},
+  {c:'Toxicity', q:'Name situations that cause Al³⁺ accumulation in the body.', a:'IV administration, dialysis, impaired kidney function, exceeding natural limits'},
+  {c:'Toxicity', q:'Who first described dialysis dementia, and when?', a:'Alfrey, in 1972'},
+  {c:'Toxicity', q:'Minimum duration of hemodialysis before dialysis dementia was observed?', a:'15 months or longer'},
+  {c:'Toxicity', q:'List the symptoms of dialysis dementia.', a:'Speech disorders, bone mineralization problems, general dementia signs'},
+  {c:'Toxicity', q:'How is dialysis dementia prevented today?', a:'Al³⁺-free dialysate solutions / techniques such as reverse osmosis'},
+  {c:'Adjuvant', q:'Name the four pharmaceutical uses of aluminum compounds.', a:'Adjuvant, antacid, phosphate binder, antiperspirant'},
+  {c:'Adjuvant', q:'Define an adjuvant.', a:'An agent/mixture that binds a specific antigen; added to vaccines to boost antibody response and/or stabilize the preparation'},
+  {c:'Adjuvant', q:'How do aluminum-based adjuvants act as a slow-release system?', a:'They trap antigen in a depot at the injection site, releasing it slowly for steady immune stimulation'},
+  {c:'Adjuvant', q:'Which adjuvant type is FDA-approved and used in anthrax vaccines in the US?', a:'Al³⁺ salts'},
+  {c:'Adjuvant', q:'Which aluminum compound appears in anthrax, diphtheria, Hib, hepatitis A&B, Lyme, pertussis and tetanus vaccines?', a:'Al(OH)₃'},
+  {c:'Adjuvant', q:'When was the adjuvant effect of potassium alum discovered, and its formula?', a:'1926; KAl(SO₄)₂·12H₂O'},
+  {c:'Antacids', q:'List three functions of antacids.', a:'Neutralize excess stomach acid, cytoprotect the gastric mucosa, help heal gastric/duodenal ulcerations'},
+  {c:'Antacids', q:'What kind of compound is Al(OH)₃ in acid/base terms?', a:'Amphoteric — can react as acid or base'},
+  {c:'Antacids', q:'Write the reaction of Al(OH)₃ with stomach HCl.', a:'Al(OH)₃ + 3HCl → AlCl₃ + 3H₂O'},
+  {c:'Antacids', q:'Common side effect of Al(OH)₃, and how it is managed?', a:'Constipation — offset with Mg²⁺ antacids and an antifoaming agent like simethicone'},
+  {c:'Antacids', q:'What is simethicone, and its function?', a:'A mixture of poly(dimethyl siloxane) and silica gel that decreases the surface tension of gas bubbles'},
+  {c:'Antacids', q:'Write the reaction of sodium bicarbonate with gastric HCl.', a:'NaHCO₃ + HCl → NaCl + H₂O + CO₂'},
+  {c:'Antacids', q:'Side effect of large doses of NaHCO₃?', a:'Alkaline urine, which can lead to kidney problems'},
+  {c:'Antacids', q:'Aluminum glycinate is also known as, and its formula?', a:'Dihydroxy aluminum glycinate; Al(NH₂CH₂COO)(OH)₂'},
+  {c:'Antacids', q:'Product containing dihydroxy aluminum glycinate, Al(OH)₃, magnesium trisilicate and simethicone?', a:'Gastralgine®'},
+  {c:'Antacids', q:'Heartburn is the main symptom of which disease, and its cause?', a:'GERD — caused by esophageal influx of gastric HCl'},
+  {c:'Antacids', q:'What are alginates, and where do they come from?', a:'Natural polysaccharide polymers isolated from brown seaweeds'},
+  {c:'Antacids', q:'Four typical ingredients of an alginate raft formulation?', a:'Alginic acid, NaHCO₃, magnesium trisilicate, Al(OH)₃'},
+  {c:'Phosphate', q:'What is hyperphosphatemia, and in whom is it common?', a:'Elevated serum phosphate; common in end-stage renal disease / dialysis patients'},
+  {c:'Phosphate', q:'What results from persistent hyperphosphatemia?', a:'Renal osteodystrophy (bone weakening from disturbed calcium/phosphate metabolism)'},
+  {c:'Phosphate', q:'Final step of the Al(OH)₃ phosphate-binder mechanism?', a:'Adsorbed phosphate forms an AlPO₄ complex, excreted in feces'},
+  {c:'Phosphate', q:'Active ingredient of Malinal®, and how it differs from Al(OH)₃?', a:'Aluminosilicates — need prior acid exposure to release free Al³⁺, unlike Al(OH)₃ which binds phosphate directly'},
+  {c:'Antiperspirant', q:'First compound used as an antiperspirant?', a:'Aluminum trichloride (AlCl₃)'},
+  {c:'Antiperspirant', q:'Proposed mechanism of action of aluminum antiperspirants?', a:'Forms a plug of Al(OH)₃ within the sweat duct'},
+  {c:'Antiperspirant', q:'Typical concentration and vehicle in leading antiperspirant brands?', a:'~20% aluminum hexahydrate in an alcoholic base'},
+];
+const fcGrid = document.getElementById('fc-grid');
+const categories = ['All', ...new Set(flashcards.map(c=>c.c))];
+const fcFilters = document.getElementById('fc-filters');
+categories.forEach(cat=>{
+  const b = document.createElement('button');
+  b.className = 'fc-filter'+(cat==='All'?' active':'');
+  b.textContent = cat;
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('.fc-filter').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    renderCards(cat);
+  });
+  fcFilters.appendChild(b);
+});
+function renderCards(filter){
+  fcGrid.innerHTML = '';
+  const list = filter==='All' ? flashcards : flashcards.filter(c=>c.c===filter);
+  document.getElementById('fc-count').textContent = list.length + ' cards';
+  list.forEach(card=>{
+    const el = document.createElement('div');
+    el.className = 'fc-card';
+    el.innerHTML = '<div class="fc-inner">'
+      + '<div class="fc-face fc-front"><div class="cat">'+card.c+'</div><div class="q">'+card.q+'</div><span class="fc-hint">flip →</span></div>'
+      + '<div class="fc-face fc-back"><div class="a">'+card.a+'</div></div>'
+      + '</div>';
+    el.addEventListener('click', ()=> el.classList.toggle('flipped'));
+    fcGrid.appendChild(el);
+  });
+}
+renderCards('All');
+
+/* ===================== QUIZ BANK ===================== */
+const quizRaw = [
+  {q:'What is the atomic number of aluminum?', o:['11','13','15','19'], c:1},
+  {q:'Aluminum is classified as a:', o:['Alkali metal','Post-transition metal','Transition metal','Metalloid'], c:1},
+  {q:'Approximately how much Al³⁺ does the human body contain?', o:['3.5 mg','35 mg','350 mg','3.5 g'], c:1},
+  {q:'In the body, Al³⁺ is mainly distributed between:', o:['Liver and blood','Lungs and skeleton','Brain and muscle','Skin and fat'], c:1},
+  {q:'Which statement about the biological role of Al³⁺ is correct?', o:['Essential enzyme cofactor','No known biological role','Required for bone formation','Needed for oxygen transport'], c:1},
+  {q:'Most Al³⁺ taken up from the diet is:', o:['Stored in the liver','Quickly excreted by the kidneys','Deposited in muscle','Converted to AlPO₄ in blood'], c:1},
+  {q:'Which organ acts as a long-term sink, releasing Al³⁺ slowly?', o:['Liver','Bone','Spleen','Pancreas'], c:1},
+  {q:'The blood–brain barrier normally:', o:['Concentrates Al³⁺ in the brain','Prevents Al³⁺ from entering the brain','Converts Al³⁺ to Al(OH)₃ in the brain','Has no effect on Al³⁺'], c:1},
+  {q:'Al³⁺ can act as a competitive inhibitor of:', o:['Na⁺ and K⁺','Mg²⁺, Ca²⁺, Fe²⁺/³⁺','Cl⁻ and I⁻','Zn²⁺ only'], c:1},
+  {q:'Why can Al³⁺ competitively inhibit these ions?', o:['Identical color','Similar ionic radii and charges','Same melting point','Same solubility'], c:1},
+  {q:'At physiological pH 7.4, Al³⁺ forms:', o:['A soluble salt','A barely soluble Al(OH)₃ precipitate','A gas','A soluble complex with glucose'], c:1},
+  {q:'Al³⁺ accumulation can occur in all of the following EXCEPT:', o:['IV administration','Dialysis','A high-fiber diet','Impaired kidney function'], c:2},
+  {q:'Dialysis dementia was first described by:', o:['Fleming','Alfrey','Pasteur','Curie'], c:1},
+  {q:'Dialysis dementia typically appeared after hemodialysis treatment of:', o:['1 week','1 month','15 months or longer','24 hours'], c:2},
+  {q:'Which is NOT a symptom of dialysis dementia?', o:['Speech disorders','Bone mineralization problems','General dementia signs','Increased appetite'], c:3},
+  {q:'Dialysis dementia is now prevented mainly by:', o:['Higher dialysate temperature','Al³⁺-free dialysate solutions','Increasing dialysis frequency','Adding potassium alum'], c:1},
+  {q:'Which of these is NOT one of the four pharmaceutical uses of aluminum covered?', o:['Adjuvant','Antacid','Antibiotic','Antiperspirant'], c:2},
+  {q:'An adjuvant is best described as:', o:['A preservative only','An agent that binds antigen and boosts immune response','A coloring agent','An antibiotic booster'], c:1},
+  {q:'Aluminum-based adjuvants enhance immunity mainly by:', o:['Directly killing pathogens','Acting as a slow-release depot at the injection site','Increasing body temperature','Binding red blood cells'], c:1},
+  {q:'Al³⁺ salts are the only adjuvant type approved for use in:', o:['Anthrax vaccines in the US','Malaria vaccines','Rabies vaccines','Insulin formulations'], c:0},
+  {q:'The adjuvant effect of potassium alum was discovered in:', o:['1901','1926','1955','1972'], c:1},
+  {q:'The formula of potassium alum is:', o:['Al(OH)₃','AlCl₃','KAl(SO₄)₂·12H₂O','Al₂(SO₄)₃'], c:2},
+  {q:'Which is NOT a function of antacids?', o:['Neutralize excess stomach acid','Cytoprotective effect on gastric mucosa','Increase gastric acid secretion','Help heal gastric/duodenal ulcerations'], c:2},
+  {q:'Al(OH)₃ is chemically described as:', o:['A strong base only','An amphoteric compound','A strong acid only','A neutral salt'], c:1},
+  {q:'The reaction Al(OH)₃ + 3HCl → forms:', o:['AlCl₃ + 3H₂O','Al₂O₃ + HCl','AlPO₄ + H₂O','AlCl₃ + H₂'], c:0},
+  {q:'A common side effect of Al(OH)₃ antacids is:', o:['Diarrhea','Constipation','Hypertension','Insomnia'], c:1},
+  {q:'Simethicone is added to antacid formulations to:', o:['Increase acid production','Reduce gas bubble surface tension (antifoaming)','Color the tablet','Preserve shelf life'], c:1},
+  {q:'Sodium bicarbonate reacts with gastric HCl to produce:', o:['AlCl₃ + H₂O','NaCl + H₂O + CO₂','Na₂CO₃ + HCl','NaOH + Cl₂'], c:1},
+  {q:'A key disadvantage of NaHCO₃ in large doses is:', o:['It causes acidic urine','It causes alkaline urine, risking kidney problems','It has no side effects','It causes hyperphosphatemia'], c:1},
+  {q:'Dihydroxy aluminum glycinate is also known as:', o:['Potassium alum','Aluminum glycinate','Aluminum trichloride','Aluminosilicate'], c:1},
+  {q:'Gastralgine® contains dihydroxy aluminum glycinate, Al(OH)₃, magnesium trisilicate and:', o:['Simethicone','Sodium bicarbonate','Alginic acid','Potassium alum'], c:0},
+  {q:'Heartburn is the primary symptom of:', o:['Renal osteodystrophy','GERD','Dialysis dementia','Hyperphosphatemia'], c:1},
+  {q:'Alginates used in raft formulations are isolated from:', o:['Animal bone','Brown seaweeds','Synthetic polymers','Coral reefs'], c:1},
+  {q:'In alginate raft formulations, trapped HCO₃⁻ reacts with gastric acid to release:', o:['O₂ gas','CO₂ gas, giving the raft buoyancy','N₂ gas','H₂ gas'], c:1},
+  {q:'In the alginate raft mechanism, Al(OH)₃ mainly provides:', o:['Coloring','Additional acid-neutralizing capacity','The gas for buoyancy','Antibiotic activity'], c:1},
+  {q:'Hyperphosphatemia is especially common in:', o:['Healthy athletes','Patients with end-stage renal disease / on dialysis','Pregnant women','Children under 5'], c:1},
+  {q:'Persistent hyperphosphatemia can result in:', o:['Renal osteodystrophy','Dialysis dementia','GERD','Anthrax infection'], c:0},
+  {q:'In the phosphate-binder mechanism, Al(OH)₃ dissociates into Al³⁺ mainly in the:', o:['Small intestine (pH 6–8.5)','Acidic stomach (pH ~1)','Colon','Bloodstream'], c:1},
+  {q:'The phosphate-binder mechanism ends with excretion of:', o:['AlCl₃ in urine','AlPO₄ complex in feces','Al(OH)₃ in sweat','KAl(SO₄)₂ in bile'], c:1},
+  {q:'Malinal® uses which active ingredient as a phosphate binder?', o:['Al(OH)₃','Aluminosilicates','Potassium alum','Aluminum glycinate'], c:1},
+  {q:'Unlike Al(OH)₃, aluminosilicates as phosphate binders:', o:['Work faster','Require prior acid exposure to release free Al³⁺','Do not bind phosphate at all','Are used only as antiperspirants'], c:1},
+  {q:'The first compound used as an antiperspirant was:', o:['Al(OH)₃','Aluminum trichloride (AlCl₃)','Potassium alum','Aluminosilicate'], c:1},
+  {q:'Aluminum antiperspirants are thought to work by:', o:['Killing sweat gland bacteria only','Forming a plug of Al(OH)₃ within the sweat duct','Cooling the skin','Increasing sweat duct diameter'], c:1},
+  {q:'Leading antiperspirant brands typically contain about:', o:['2% aluminum hexahydrate','20% aluminum hexahydrate','50% aluminum hexahydrate','80% aluminum hexahydrate'], c:1},
+  {q:'Besides the armpits, aluminum antiperspirants may also help with sweating of:', o:['The scalp only','Palms and soles','The tongue','The eyelids'], c:1},
+];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+// build shuffled question set once
+const quiz = quizRaw.map(item=>{
+  const options = item.o.map((text,idx)=>({text, isCorrect: idx===item.c}));
+  const shuffled = shuffle(options);
+  return {q:item.q, options:shuffled};
+});
+
+let qzState = quiz.map(()=>({answered:false, correct:null, picked:null}));
+let qzIndex = 0;
+
+const qzTotal = document.getElementById('qz-total');
+qzTotal.textContent = quiz.length;
+
+function renderQzGrid(){
+  const grid = document.getElementById('qz-grid');
+  grid.innerHTML = '';
+  qzState.forEach((s,i)=>{
+    const d = document.createElement('div');
+    d.className = 'qz-dot' + (i===qzIndex?' current':'') + (s.answered ? (s.correct?' correct':' wrong') : '');
+    d.textContent = i+1;
+    d.addEventListener('click', ()=>{ qzIndex = i; renderQuestion(); });
+    grid.appendChild(d);
+  });
+}
+
+function renderScore(){
+  const answered = qzState.filter(s=>s.answered).length;
+  const correct = qzState.filter(s=>s.correct).length;
+  document.getElementById('qz-score').textContent = correct;
+  document.getElementById('qz-answered').textContent = answered;
+}
+
+function renderQuestion(){
+  const item = quiz[qzIndex];
+  const state = qzState[qzIndex];
+  document.getElementById('qz-num').textContent = 'Question '+(qzIndex+1)+' of '+quiz.length;
+  document.getElementById('qz-text').textContent = item.q;
+  const optWrap = document.getElementById('qz-options');
+  optWrap.innerHTML = '';
+  item.options.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = opt.text;
+    if(state.answered){
+      b.disabled = true;
+      if(opt.isCorrect) b.classList.add('correct');
+      else if(i===state.picked) b.classList.add('wrong');
+    }
+    b.addEventListener('click', ()=>{
+      if(state.answered) return;
+      state.answered = true;
+      state.picked = i;
+      state.correct = opt.isCorrect;
+      renderQuestion();
+      renderScore();
+      renderQzGrid();
+    });
+    optWrap.appendChild(b);
+  });
+  const exp = document.getElementById('qz-explain');
+  if(state.answered){
+    const correctOpt = item.options.find(o=>o.isCorrect);
+    exp.textContent = (state.correct ? 'Correct. ' : 'Not quite. ') + 'Correct answer: ' + correctOpt.text;
+    exp.classList.add('show');
+  } else {
+    exp.classList.remove('show');
+  }
+  document.getElementById('qz-prev').disabled = qzIndex===0;
+  document.getElementById('qz-next').disabled = qzIndex===quiz.length-1;
+  renderQzGrid();
+}
+
+document.getElementById('qz-prev').addEventListener('click', ()=>{ if(qzIndex>0){qzIndex--; renderQuestion();} });
+document.getElementById('qz-next').addEventListener('click', ()=>{ if(qzIndex<quiz.length-1){qzIndex++; renderQuestion();} });
+document.getElementById('qz-restart').addEventListener('click', ()=>{
+  qzState = quiz.map(()=>({answered:false, correct:null, picked:null}));
+  qzIndex = 0;
+  renderQuestion();
+  renderScore();
+});
+
+renderQuestion();
+renderScore();
+</script>
+</body>
+</html>
